@@ -11,6 +11,9 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        "custom-dark": "#04152d",
+        "custom-faded": "rgba(4, 21, 45, 0.6)", // Faded version of #04152d
+        "custom-lighter": "rgba(4, 21, 45, 0.01)", // Faded version of #04152d
       },
     },
   },
