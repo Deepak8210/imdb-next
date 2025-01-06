@@ -1,19 +1,21 @@
 import Image from "next/image";
 import cardImg from "../../public/cardImg.jpg";
+import { formatDate } from "../utils/formatDate";
 
-const Card = () => {
+const Card = ({ imageUrl, title, date, ratings }) => {
   return (
     <div className=" mr-4">
       <div className="relative  h-[350px] w-full ">
         <Image
           alt="card Image"
-          src={cardImg}
+          src={imageUrl || cardImg}
           fill
+          sizes="fit"
           className="object-cover relative rounded-xl "
         />
         <div className="absolute -bottom-5 flex justify-between items-start w-full px-2">
-          <span className=" rounded-full text-xl font-medium p-2 bg-white text-black ">
-            7.4
+          <span className=" rounded-full text-md  w-12 h-12 font-medium flex items-center justify-center bg-white text-black outline  outline-2 outline-gray-600 -outline-offset-4 ">
+            <span>{ratings?.toFixed(1)}</span>
           </span>
           <div className="flex  space-x-2 items-center">
             <span className="text-white text-[0.8rem] font-thin bg-pink-600 py-[1px] px-2 rounded-sm">
@@ -25,8 +27,8 @@ const Card = () => {
           </div>
         </div>
       </div>
-      <h5 className="text-gray-100 text-lg mt-6">Wicked</h5>
-      <span className="text-gray-400 text-sm">Nov 20,2024</span>
+      <h5 className="text-gray-100 text-lg mt-6">{title}</h5>
+      <span className="text-gray-400 text-sm">{date}</span>
     </div>
   );
 };

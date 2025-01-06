@@ -3,23 +3,46 @@ import Card from "../components/Card";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import Link from "next/link";
-import {
-  FaInstagram,
-  FaFacebook,
-  FaLinkedinIn,
-  FaTwitter,
-  FaLinkedin,
-} from "react-icons/fa";
-
+import { fetchTrending as fetchTrendings } from "../api/Trending";
+import { useState, useEffect, use } from "react";
+import { FaInstagram, FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
+import { generateRandomNumber } from "../utils/generateRandom";
+import { fetchBanner, fetchTrending } from "../store/slices/providerSlice";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../store/store";
 export default function Home() {
+  const baseImageUrl = "https://image.tmdb.org/t/p/original";
+  const [trendings, setTrendings] = useState([]);
+  const [imageUrl, setImageUrl] = useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    fetchTrendings().then((data) => {
+      setTrendings(data);
+      const randomIndex = generateRandomNumber();
+
+      const image = `${baseImageUrl}${data.results[randomIndex].backdrop_path}`;
+      setImageUrl(image);
+    });
+  }, []);
+
+  useEffect(() => {
+    // Dispatching the actions to fetch data
+    dispatch(fetchBanner());
+    dispatch(fetchTrending());
+  }, [dispatch]);
+
   return (
     <div className="w-full">
       <section
         className="text-white h-screen flex flex-col justify-between items-center "
-        style={{ background: "url('banner.jpg')" }}
+        style={{
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: "cover",
+        }}
       >
-        <div className="h-20 w-full  bg-gradient-to-b from-custom-dark via-custom-faded to-custom-lighter "></div>
-        <div className="w-full flex flex-col items-center justify-between">
+        <div className="w-full h-full absolute bg-[rgba(4,21,45,0.5)]"></div>
+        <div className="h-20 w-full  bg-gradient-to-b from-custom-dark via-custom6faded to-custom-lighter"></div>
+        <div className="w-full flex flex-col items-center justify-between z-20">
           <h1 className="text-[5.5rem] font-semibold leading-[5rem]">
             Welcome.
           </h1>
@@ -58,45 +81,16 @@ export default function Home() {
               aria-label="My Favorite Images"
               options={{ perPage: 5, perMove: 1, pagination: false }}
             >
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
+              {trendings?.results?.map((trending) => (
+                <SplideSlide key={trending.id}>
+                  <Card
+                    imageUrl={`${baseImageUrl}${trending.backdrop_path}`}
+                    title={trending.name || trending.title}
+                    date={trending.release_date || trending.first_air_date}
+                    ratings={trending.vote_average}
+                  />
+                </SplideSlide>
+              ))}
             </Splide>
           </div>
         </div>
@@ -117,7 +111,7 @@ export default function Home() {
               aria-label="My Favorite Images"
               options={{ perPage: 5, perMove: 1, pagination: false }}
             >
-              <SplideSlide>
+              {/* <SplideSlide>
                 <Card />
               </SplideSlide>
               <SplideSlide>
@@ -152,10 +146,7 @@ export default function Home() {
               </SplideSlide>
               <SplideSlide>
                 <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
+              </SplideSlide>*/}
             </Splide>
           </div>
         </div>

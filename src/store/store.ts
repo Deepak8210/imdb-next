@@ -1,7 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { providerReducer } from "./slices/providerSlice";
 
 const store = configureStore({
-  reducer: {},
+  reducer: {
+    provider: providerReducer,
+  },
 });
 
 export type AppDispatch = typeof store.dispatch;

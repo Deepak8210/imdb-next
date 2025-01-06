@@ -13,8 +13,7 @@ export default function ProviderWrapper({ children }: ProviderWrapperProps) {
   return (
     <Provider store={store}>
       <Header />
-      {children}{" "}
-      {/* This renders the child pages/components inside the wrapper */}
+      {children}
     </Provider>
   );
 }
