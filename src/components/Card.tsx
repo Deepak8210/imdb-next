@@ -1,8 +1,7 @@
 import Image from "next/image";
 import cardImg from "../../public/cardImg.jpg";
-import { formatDate } from "../utils/formatDate";
 
-const Card = ({ imageUrl, title, date, ratings }) => {
+const Card = ({ imageUrl, title, date, ratings }: any) => {
   return (
     <div className=" mr-4">
       <div className="relative  h-[350px] w-full ">

@@ -7,29 +7,53 @@ import { fetchTrending as fetchTrendings } from "../api/Trending";
 import { useState, useEffect, use } from "react";
 import { FaInstagram, FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 import { generateRandomNumber } from "../utils/generateRandom";
-import { fetchBanner, fetchTrending } from "../store/slices/providerSlice";
-import { useDispatch } from "react-redux";
+import {
+  fetchBanner,
+  fetchTrending,
+  fetchPopular,
+  fetchTopRated,
+} from "../store/slices/providerSlice";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../store/store";
+import CardSkeleton from "../components/CardSkeleton";
+
 export default function Home() {
   const baseImageUrl = "https://image.tmdb.org/t/p/original";
   const [trendings, setTrendings] = useState([]);
   const [imageUrl, setImageUrl] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-  useEffect(() => {
-    fetchTrendings().then((data) => {
-      setTrendings(data);
-      const randomIndex = generateRandomNumber();
-
-      const image = `${baseImageUrl}${data.results[randomIndex].backdrop_path}`;
-      setImageUrl(image);
-    });
-  }, []);
 
   useEffect(() => {
-    // Dispatching the actions to fetch data
     dispatch(fetchBanner());
     dispatch(fetchTrending());
+    dispatch(fetchPopular());
+    dispatch(fetchTopRated());
   }, [dispatch]);
+
+  const banners = useSelector((state: any) => state.provider.banners.data) || {
+    results: [],
+  };
+  const trending = useSelector((state: any) => state.provider.trending) || {
+    results: [],
+  };
+
+  const popular = useSelector((state: any) => state.provider.popular.data) || {
+    results: [],
+  };
+  const topRated = useSelector(
+    (state: any) => state.provider.topRated.data
+  ) || {
+    results: [],
+  };
+
+  useEffect(() => {
+    // Only set the image URL if data is available and not null
+    if (banners !== null && banners?.results?.length > 0) {
+      const randomIndex = generateRandomNumber();
+      const image = `${baseImageUrl}${banners?.results[randomIndex]?.backdrop_path}`;
+      setImageUrl(image);
+    }
+  }, [banners]);
 
   return (
     <div className="w-full">
@@ -81,14 +105,18 @@ export default function Home() {
               aria-label="My Favorite Images"
               options={{ perPage: 5, perMove: 1, pagination: false }}
             >
-              {trendings?.results?.map((trending) => (
+              {trending?.data?.results?.map((trending: any) => (
                 <SplideSlide key={trending.id}>
-                  <Card
-                    imageUrl={`${baseImageUrl}${trending.backdrop_path}`}
-                    title={trending.name || trending.title}
-                    date={trending.release_date || trending.first_air_date}
-                    ratings={trending.vote_average}
-                  />
+                  {trending.loading ? (
+                    <CardSkeleton />
+                  ) : (
+                    <Card
+                      imageUrl={`${baseImageUrl}${trending.backdrop_path}`}
+                      title={trending.name || trending.title}
+                      date={trending.release_date || trending.first_air_date}
+                      ratings={trending.vote_average}
+                    />
+                  )}
                 </SplideSlide>
               ))}
             </Splide>
@@ -111,42 +139,16 @@ export default function Home() {
               aria-label="My Favorite Images"
               options={{ perPage: 5, perMove: 1, pagination: false }}
             >
-              {/* <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>*/}
+              {popular?.results?.map((trending: any) => (
+                <SplideSlide key={trending.id}>
+                  <Card
+                    imageUrl={`${baseImageUrl}${trending.backdrop_path}`}
+                    title={trending.name || trending.title}
+                    date={trending.release_date || trending.first_air_date}
+                    ratings={trending.vote_average}
+                  />
+                </SplideSlide>
+              ))}
             </Splide>
           </div>
         </div>
@@ -167,45 +169,16 @@ export default function Home() {
               aria-label="My Favorite Images"
               options={{ perPage: 5, perMove: 1, pagination: false }}
             >
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
-              <SplideSlide>
-                <Card />
-              </SplideSlide>
+              {topRated?.results?.map((trending: any) => (
+                <SplideSlide key={trending.id}>
+                  <Card
+                    imageUrl={`${baseImageUrl}${trending.backdrop_path}`}
+                    title={trending.name || trending.title}
+                    date={trending.release_date || trending.first_air_date}
+                    ratings={trending.vote_average}
+                  />
+                </SplideSlide>
+              ))}
             </Splide>
           </div>
         </div>
@@ -228,16 +201,16 @@ export default function Home() {
         </p>
         <div className="w-full flex items-center justify-center space-x-4 mt-5 mb-5">
           <Link href={"/"} className="bg-[#04152D] p-3 rounded-full">
-            <FaFacebook className="w-6 h-6" />
+            <FaFacebook className="w-6 h-6 text-gray-300" />
           </Link>
           <Link href={"/"} className="bg-[#04152D] p-3 rounded-full">
-            <FaInstagram className="w-6 h-6" />
+            <FaInstagram className="w-6 h-6 text-gray-300" />
           </Link>
           <Link href={"/"} className="bg-[#04152D] p-3 rounded-full">
-            <FaTwitter className="w-6 h-6" />
+            <FaTwitter className="w-6 h-6 text-gray-300" />
           </Link>
           <Link href={"/"} className="bg-[#04152D] p-3 rounded-full">
-            <FaLinkedin className="w-6 h-6" />
+            <FaLinkedin className="w-6 h-6 text-gray-300" />
           </Link>
         </div>
       </section>
