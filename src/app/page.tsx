@@ -36,18 +36,14 @@ export default function Home() {
   const trending = useSelector((state: any) => state.provider.trending) || {
     results: [],
   };
-
-  const popular = useSelector((state: any) => state.provider.popular.data) || {
+  const popular = useSelector((state: any) => state.provider.popular) || {
     results: [],
   };
-  const topRated = useSelector(
-    (state: any) => state.provider.topRated.data
-  ) || {
+  const topRated = useSelector((state: any) => state.provider.topRated) || {
     results: [],
   };
 
   useEffect(() => {
-    // Only set the image URL if data is available and not null
     if (banners !== null && banners?.results?.length > 0) {
       const randomIndex = generateRandomNumber();
       const image = `${baseImageUrl}${banners?.results[randomIndex]?.backdrop_path}`;
@@ -55,10 +51,34 @@ export default function Home() {
     }
   }, [banners]);
 
+  // Helper function to render slides
+  const renderSlides = (data: any, loading: boolean) => {
+    if (loading) {
+      return Array(5)
+        .fill(0)
+        .map((_, index) => (
+          <SplideSlide key={`skeleton-${index}`}>
+            <CardSkeleton />
+          </SplideSlide>
+        ));
+    }
+
+    return data?.results?.map((item: any) => (
+      <SplideSlide key={item.id}>
+        <Card
+          imageUrl={`${baseImageUrl}${item.backdrop_path}`}
+          title={item.name || item.title}
+          date={item.release_date || item.first_air_date}
+          ratings={item.vote_average}
+        />
+      </SplideSlide>
+    ));
+  };
+
   return (
     <div className="w-full">
       <section
-        className="text-white h-screen flex flex-col justify-between items-center "
+        className="text-white h-screen flex flex-col justify-between items-center"
         style={{
           backgroundImage: `url(${imageUrl})`,
           backgroundSize: "cover",
@@ -66,7 +86,7 @@ export default function Home() {
       >
         <div className="w-full h-full absolute bg-[rgba(4,21,45,0.5)]"></div>
         <div className="h-20 w-full  bg-gradient-to-b from-custom-dark via-custom6faded to-custom-lighter"></div>
-        <div className="w-full flex flex-col items-center justify-between z-20">
+        <div className="w-full flex flex-col items-center justify-between z-10">
           <h1 className="text-[5.5rem] font-semibold leading-[5rem]">
             Welcome.
           </h1>
@@ -87,6 +107,7 @@ export default function Home() {
 
         <div className="h-20 w-full  bg-gradient-to-t from-custom-dark via-custom-faded to-custom-lighter "></div>
       </section>
+
       <section className="w-full min-h-screen px-[10%]">
         <div className="mt-12">
           <div className="flex items-center justify-between">
@@ -100,28 +121,16 @@ export default function Home() {
               </button>
             </div>
           </div>
-          <div className="">
+          <div>
             <Splide
-              aria-label="My Favorite Images"
+              aria-label="Trending Movies and Shows"
               options={{ perPage: 5, perMove: 1, pagination: false }}
             >
-              {trending?.data?.results?.map((trending: any) => (
-                <SplideSlide key={trending.id}>
-                  {trending.loading ? (
-                    <CardSkeleton />
-                  ) : (
-                    <Card
-                      imageUrl={`${baseImageUrl}${trending.backdrop_path}`}
-                      title={trending.name || trending.title}
-                      date={trending.release_date || trending.first_air_date}
-                      ratings={trending.vote_average}
-                    />
-                  )}
-                </SplideSlide>
-              ))}
+              {renderSlides(trending?.data, trending?.loading)}
             </Splide>
           </div>
         </div>
+
         <div className="mt-12">
           <div className="flex items-center justify-between">
             <h5 className="text-gray-100 text-2xl">What's Popular</h5>
@@ -134,24 +143,16 @@ export default function Home() {
               </button>
             </div>
           </div>
-          <div className="">
+          <div>
             <Splide
-              aria-label="My Favorite Images"
+              aria-label="Popular Movies and Shows"
               options={{ perPage: 5, perMove: 1, pagination: false }}
             >
-              {popular?.results?.map((trending: any) => (
-                <SplideSlide key={trending.id}>
-                  <Card
-                    imageUrl={`${baseImageUrl}${trending.backdrop_path}`}
-                    title={trending.name || trending.title}
-                    date={trending.release_date || trending.first_air_date}
-                    ratings={trending.vote_average}
-                  />
-                </SplideSlide>
-              ))}
+              {renderSlides(popular?.data, popular?.loading)}
             </Splide>
           </div>
         </div>
+
         <div className="mt-12">
           <div className="flex items-center justify-between">
             <h5 className="text-gray-100 text-2xl">Top Rated</h5>
@@ -164,25 +165,17 @@ export default function Home() {
               </button>
             </div>
           </div>
-          <div className="">
+          <div>
             <Splide
-              aria-label="My Favorite Images"
+              aria-label="Top Rated Movies and Shows"
               options={{ perPage: 5, perMove: 1, pagination: false }}
             >
-              {topRated?.results?.map((trending: any) => (
-                <SplideSlide key={trending.id}>
-                  <Card
-                    imageUrl={`${baseImageUrl}${trending.backdrop_path}`}
-                    title={trending.name || trending.title}
-                    date={trending.release_date || trending.first_air_date}
-                    ratings={trending.vote_average}
-                  />
-                </SplideSlide>
-              ))}
+              {renderSlides(topRated?.data, topRated?.loading)}
             </Splide>
           </div>
         </div>
       </section>
+
       <section className="w-full bg-[#020c1a] h-fit p-5">
         <div className="flex space-x-6 justify-center text-gray-200 items-center px-[10%] py-8">
           <span>Terms Of Use</span>
