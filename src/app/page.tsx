@@ -16,6 +16,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../store/store";
 import CardSkeleton from "../components/CardSkeleton";
+import ToggleBtn from "@/components/ToggleBtn";
 
 export default function Home() {
   const baseImageUrl = "https://image.tmdb.org/t/p/original";
@@ -113,12 +114,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <h5 className="text-gray-100 text-2xl">Trending</h5>
             <div className="p-1 flex rounded-full space-x-4 my-4">
-              <button className="bg-gradient-to-r from-[#3c1053] to-[#ff00cc] px-10 py-[2px] rounded-full text-white">
-                Day
-              </button>
-              <button className="bg-gradient-to-r from-[#ff00cc] to-[#3c1053] px-8 py-[2px] rounded-full text-white">
-                Week
-              </button>
+              <ToggleBtn />
             </div>
           </div>
           <div>
@@ -135,12 +131,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <h5 className="text-gray-100 text-2xl">What's Popular</h5>
             <div className="p-1 flex rounded-full space-x-4 my-4">
-              <button className="bg-gradient-to-r from-[#3c1053] to-[#ff00cc] px-10 py-[2px] rounded-full text-white">
-                Movies
-              </button>
-              <button className="bg-gradient-to-r from-[#ff00cc] to-[#3c1053] px-8 py-[2px] rounded-full text-white">
-                Tv Shows
-              </button>
+              <ToggleBtn />
             </div>
           </div>
           <div>
@@ -157,12 +148,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <h5 className="text-gray-100 text-2xl">Top Rated</h5>
             <div className="p-1 flex rounded-full space-x-4 my-4">
-              <button className="bg-gradient-to-r from-[#3c1053] to-[#ff00cc] px-10 py-[2px] rounded-full text-white">
-                Movies
-              </button>
-              <button className="bg-gradient-to-r from-[#ff00cc] to-[#3c1053] px-8 py-[2px] rounded-full text-white">
-                Tv Shows
-              </button>
+              <ToggleBtn />
             </div>
           </div>
           <div>
@@ -206,6 +192,7 @@ export default function Home() {
             <FaLinkedin className="w-6 h-6 text-gray-300" />
           </Link>
         </div>
+        <ToggleBtn />
       </section>
     </div>
   );
