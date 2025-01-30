@@ -1,0 +1,10 @@
+/* styles/custom.css */
+.outer_circle {
+  stroke-dasharray: 410;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.4s ease-out, stroke 0.7s 0.4s ease-out;
+}
+
+.glightbox_video:hover .outer_circle {
+  stroke-dashoffset: 410;
+}

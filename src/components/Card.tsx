@@ -1,9 +1,10 @@
 import Image from "next/image";
 import cardImg from "../../public/cardImg.jpg";
+import CircularProgressBar from "./CircularProgressBar";
 
-const Card = ({ imageUrl, title, date, ratings }: any) => {
+const Card = ({ id, imageUrl, title, date, ratings }: any) => {
   return (
-    <div className=" mr-4">
+    <div onClick={() => console.log("id", id)} className=" mr-4">
       <div className="relative  h-[350px] w-full ">
         <Image
           alt="card Image"
@@ -13,8 +14,14 @@ const Card = ({ imageUrl, title, date, ratings }: any) => {
           className="object-cover relative rounded-xl "
         />
         <div className="absolute -bottom-5 flex justify-between items-start w-full px-2">
-          <span className=" rounded-full text-md  w-12 h-12 font-medium flex items-center justify-center bg-white text-black outline  outline-2 outline-gray-600 -outline-offset-4 ">
-            <span>{ratings?.toFixed(1)}</span>
+          <span className=" ml-2 rounded-full text-md  w-16 h-16 font-medium flex items-center justify-center bg-gray-100   outline-2 outline-gray-600 -outline-offset-4 ">
+            {/* <span>{ratings?.toFixed(1)}</span> */}
+            <CircularProgressBar
+              percentage={(ratings * 10).toFixed(0)}
+              size={60}
+              strokeWidth={5}
+              stroke={"#FF0000"}
+            />
           </span>
           <div className="flex  space-x-2 items-center">
             <span className="text-white text-[0.8rem] font-thin bg-pink-600 py-[1px] px-2 rounded-sm">

@@ -1,6 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+// Define the types for the arguments
+interface FetchDetailsArgs {
+  filterType: string;
+  movieId: string;
+}
+
 // Define error type
 interface ErrorResponse {
   message: string;
@@ -26,6 +32,19 @@ interface ProviderState {
     data: [] | null;
     loading: boolean;
     error: string | null;
+  };
+  movieDetails: {
+    loading: boolean;
+    error: string | null;
+    details: any;
+    credits: any;
+  };
+  similarVideos: {
+    loading: boolean;
+    error: string | null;
+    videos: any;
+    similar: any;
+    recommendation: any;
   };
 }
 
@@ -57,13 +76,13 @@ export const fetchBanner = createAsyncThunk<
 // Async thunk to fetch users
 export const fetchTrending = createAsyncThunk<
   [],
-  void,
+  string,
   {
     rejectValue: ErrorResponse;
   }
->("provider/fetchUsers", async (_, { rejectWithValue }) => {
+>("provider/fetchUsers", async (label, { rejectWithValue }) => {
   try {
-    const { data } = await axios.get(tmdbBaseUrl + "/trending/all/day", {
+    const { data } = await axios.get(tmdbBaseUrl + `/trending/all/${label}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -80,13 +99,13 @@ export const fetchTrending = createAsyncThunk<
 // Async thunk to fetch popular
 export const fetchPopular = createAsyncThunk<
   [],
-  void,
+  string,
   {
     rejectValue: ErrorResponse;
   }
->("provider/fetchPopular", async (_, { rejectWithValue }) => {
+>("provider/fetchPopular", async (label, { rejectWithValue }) => {
   try {
-    const { data } = await axios.get(tmdbBaseUrl + "/movie/popular", {
+    const { data } = await axios.get(tmdbBaseUrl + `/${label}/popular`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -103,17 +122,20 @@ export const fetchPopular = createAsyncThunk<
 // Async thunk to fetch top rated
 export const fetchTopRated = createAsyncThunk<
   [],
-  void,
+  string,
   {
     rejectValue: ErrorResponse;
   }
->("provider/fetchTopRated", async (_, { rejectWithValue }) => {
+>("provider/fetchTopRated", async (label, { rejectWithValue }) => {
   try {
-    const { data } = await axios.get(tmdbBaseUrl + "/movie/top_rated", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const { data } = await axios.get(
+      tmdbBaseUrl + `/${label.slice(0, -1)}/top_rated`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
     return data;
   } catch (error) {
@@ -123,12 +145,123 @@ export const fetchTopRated = createAsyncThunk<
   }
 });
 
+// Async thunk to fetch movie details
+export const fetchDetails = createAsyncThunk<
+  { details: any; credits: any }, // Update the return type to match the actual return value
+  FetchDetailsArgs, // Argument type
+  {
+    rejectValue: ErrorResponse;
+  }
+>(
+  "provider/fetchDetails",
+  async ({ filterType, movieId }, { rejectWithValue }) => {
+    try {
+      // Define both API calls
+      const api1 = axios.get(
+        tmdbBaseUrl + `/${filterType}/${movieId}?language=en-US`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const api2 = axios.get(
+        tmdbBaseUrl + `/${filterType}/${movieId}/credits`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Use Promise.all to call both APIs concurrently
+      const [response1, response2] = await Promise.all([api1, api2]);
+
+      // Return both responses
+      return {
+        details: response1.data,
+        credits: response2.data,
+      };
+    } catch (error) {
+      return rejectWithValue({
+        message: error instanceof Error ? error.message : "An error occurred",
+      });
+    }
+  }
+);
+
+// Async thunk to fetch similar/recommended  movies/videos
+export const fetchSimilarVideos = createAsyncThunk<
+  { videos: any; similar: any; recommendation: any }, // Update the return type to match the actual return value
+  FetchDetailsArgs, // Argument type
+  {
+    rejectValue: ErrorResponse;
+  }
+>(
+  "provider/fetchSimilarVideos",
+  async ({ filterType, movieId }, { rejectWithValue }) => {
+    try {
+      // Define both API calls
+      const api1 = axios.get(tmdbBaseUrl + `/${filterType}/${movieId}/videos`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const api2 = axios.get(
+        tmdbBaseUrl + `/${filterType}/${movieId}/similar`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const api3 = axios.get(
+        tmdbBaseUrl + `/${filterType}/${movieId}/recommendations`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Use Promise.all to call both APIs concurrently
+      const [response1, response2, response3] = await Promise.all([
+        api1,
+        api2,
+        api3,
+      ]);
+
+      // Return both responses
+      return {
+        videos: response1.data,
+        similar: response2.data,
+        recommendation: response3.data,
+      };
+    } catch (error) {
+      return rejectWithValue({
+        message: error instanceof Error ? error.message : "An error occurred",
+      });
+    }
+  }
+);
+
 // Initial state
 const initialState: ProviderState = {
   banners: { data: null, loading: false, error: null },
   trending: { data: null, loading: false, error: null },
   popular: { data: null, loading: false, error: null },
   topRated: { data: null, loading: false, error: null },
+  movieDetails: { details: null, credits: null, loading: false, error: null },
+  similarVideos: {
+    videos: null,
+    similar: null,
+    recommendation: null,
+    loading: false,
+    error: null,
+  },
 };
 
 const providerSlice = createSlice({
@@ -184,6 +317,37 @@ const providerSlice = createSlice({
       .addCase(fetchTopRated.rejected, (state, action) => {
         state.topRated.loading = false;
         state.topRated.error = action.payload?.message ?? "An error occurred";
+      })
+      .addCase(fetchDetails.pending, (state) => {
+        state.movieDetails.loading = true;
+        state.movieDetails.error = null;
+      })
+      .addCase(fetchDetails.fulfilled, (state, action) => {
+        state.movieDetails.loading = false;
+        // Update state with details and credits separately
+        state.movieDetails.details = action.payload.details; // Store movie details
+        state.movieDetails.credits = action.payload.credits; // Store movie credits
+      })
+      .addCase(fetchDetails.rejected, (state, action) => {
+        state.movieDetails.loading = false;
+        state.movieDetails.error =
+          action.payload?.message ?? "An error occurred";
+      })
+      .addCase(fetchSimilarVideos.pending, (state) => {
+        state.similarVideos.loading = true;
+        state.similarVideos.error = null;
+      })
+      .addCase(fetchSimilarVideos.fulfilled, (state, action) => {
+        state.similarVideos.loading = false;
+        // Update state with details and credits separately
+        state.similarVideos.videos = action.payload.videos; // Store movie details
+        state.similarVideos.similar = action.payload.similar; // Store movie credits
+        state.similarVideos.recommendation = action.payload.recommendation; // Store movie credits
+      })
+      .addCase(fetchSimilarVideos.rejected, (state, action) => {
+        state.similarVideos.loading = false;
+        state.similarVideos.error =
+          action.payload?.message ?? "An error occurred";
       });
   },
 });
