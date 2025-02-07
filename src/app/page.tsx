@@ -75,7 +75,7 @@ export default function Home() {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-x-hidden">
       <section
         className="text-white h-screen flex flex-col justify-between items-center"
         style={{

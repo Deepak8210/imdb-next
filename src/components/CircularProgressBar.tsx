@@ -1,5 +1,4 @@
 "use client";
-import React, { useState, useEffect } from "react";
 import "./styles/custom.css";
 
 const CircularProgressBar = ({
@@ -7,10 +6,18 @@ const CircularProgressBar = ({
   size = 90,
   strokeWidth = 8,
   stroke = "#FF0000",
-}: any) => {
+}: {
+  percentage: number;
+  size?: number;
+  strokeWidth?: number;
+  stroke?: string;
+}) => {
+  // Validate the percentage value
+  const safePercentage = isNaN(percentage) ? 0 : percentage;
+
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (percentage / 100) * circumference;
+  const offset = circumference - (safePercentage / 100) * circumference;
 
   return (
     <div style={{ position: "relative", width: size, height: size }}>
@@ -21,6 +28,7 @@ const CircularProgressBar = ({
           cy={size / 2}
           r={radius}
           fill="none"
+          // stroke="#e0e0e0"
           strokeWidth={strokeWidth}
         />
         {/* Progress Circle */}
@@ -30,9 +38,9 @@ const CircularProgressBar = ({
           r={radius}
           fill="none"
           stroke={
-            percentage >= 70
+            safePercentage >= 70
               ? "#008000"
-              : percentage >= 50
+              : safePercentage >= 50
               ? "#FFA500"
               : "#FF0000"
           }
@@ -55,7 +63,7 @@ const CircularProgressBar = ({
         }}
         className="font-semibold"
       >
-        {percentage / 10}
+        {safePercentage / 10} {/* Display the safe percentage */}
       </div>
     </div>
   );

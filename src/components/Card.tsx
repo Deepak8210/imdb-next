@@ -1,10 +1,16 @@
+"use client";
 import Image from "next/image";
 import cardImg from "../../public/cardImg.jpg";
 import CircularProgressBar from "./CircularProgressBar";
+import { useRouter } from "next/navigation";
 
 const Card = ({ id, imageUrl, title, date, ratings }: any) => {
+  const router = useRouter();
   return (
-    <div onClick={() => console.log("id", id)} className=" mr-4">
+    <div
+      onClick={() => router.push(`/movie/${id}`)}
+      className=" mr-4 cursor-pointer"
+    >
       <div className="relative  h-[350px] w-full ">
         <Image
           alt="card Image"
@@ -15,9 +21,8 @@ const Card = ({ id, imageUrl, title, date, ratings }: any) => {
         />
         <div className="absolute -bottom-5 flex justify-between items-start w-full px-2">
           <span className=" ml-2 rounded-full text-md  w-16 h-16 font-medium flex items-center justify-center bg-gray-100   outline-2 outline-gray-600 -outline-offset-4 ">
-            {/* <span>{ratings?.toFixed(1)}</span> */}
             <CircularProgressBar
-              percentage={(ratings * 10).toFixed(0)}
+              percentage={parseFloat((ratings * 10).toFixed(0))}
               size={60}
               strokeWidth={5}
               stroke={"#FF0000"}

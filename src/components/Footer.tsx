@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { FaInstagram, FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
+import {
+  FaInstagram,
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedin,
+} from "react-icons/fa";
 const Footer = () => {
   return (
     <section className="w-full bg-[#020c1a] h-fit p-5">
@@ -43,17 +48,29 @@ const Footer = () => {
         velit esse cillum dolore eu fugiat nulla pariatur.
       </p>
       <div className="w-full flex items-center justify-center space-x-4 mt-5 mb-5">
-        <Link href={"/"} className="bg-[#04152D] p-3 rounded-full">
-          <FaFacebook className="w-6 h-6 text-gray-300" />
+        <Link
+          href={"/"}
+          className="bg-[#04152D] p-3 rounded-full hover:shadow-lg hover:shadow-pink-600 group duration-"
+        >
+          <FaFacebookF className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
         </Link>
-        <Link href={"/"} className="bg-[#04152D] p-3 rounded-full">
-          <FaInstagram className="w-6 h-6 text-gray-300" />
+        <Link
+          href={"/"}
+          className="bg-[#04152D] p-3 rounded-full hover:shadow-lg hover:shadow-pink-600 group duration-"
+        >
+          <FaInstagram className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
         </Link>
-        <Link href={"/"} className="bg-[#04152D] p-3 rounded-full">
-          <FaTwitter className="w-6 h-6 text-gray-300" />
+        <Link
+          href={"/"}
+          className="bg-[#04152D] p-3 rounded-full hover:shadow-lg hover:shadow-pink-600 group duration-"
+        >
+          <FaTwitter className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
         </Link>
-        <Link href={"/"} className="bg-[#04152D] p-3 rounded-full">
-          <FaLinkedin className="w-6 h-6 text-gray-300" />
+        <Link
+          href={"/"}
+          className="bg-[#04152D] p-3 rounded-full hover:shadow-lg hover:shadow-pink-600 group duration-"
+        >
+          <FaLinkedin className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
         </Link>
       </div>
     </section>
