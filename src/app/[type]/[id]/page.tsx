@@ -17,12 +17,11 @@ import MovieDetailsSkeleton from "../../../components/MovieDetailsSkeleton";
 const page = ({
   params,
 }: {
-  params: Promise<{ type: string; id: Number }>;
+  params: Promise<{ type: string; id: number }>;
 }) => {
   const baseImageUrl = "https://image.tmdb.org/t/p/original";
   const dispatch = useDispatch<AppDispatch>();
   const resolvedParams = use(params);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     dispatch(
@@ -53,8 +52,6 @@ const page = ({
     results: [],
   };
 
-  console.log(loading);
-
   return (
     <>
       {loading ? (
@@ -70,7 +67,9 @@ const page = ({
               />
             </div>
             <div className="w-full">
-              <h5 className="text-[2.2rem]">{Details?.title}</h5>
+              <h5 className="text-[2.2rem]">
+                {Details?.title || Details?.name}
+              </h5>
               <h3 className="text-[1.3rem] italic text-gray-400">
                 {Details?.tagline || "A must watch"}
               </h3>
@@ -113,39 +112,51 @@ const page = ({
                   <span className="font-semibold text-white">
                     Release Date :&nbsp;
                   </span>{" "}
-                  {Details?.release_date}
+                  {Details?.release_date || Details?.first_air_date}
                 </p>
-                <p className="text-gray-500">
-                  <span className="font-semibold text-white">
-                    Runtime :&nbsp;{" "}
-                  </span>{" "}
-                  {`${Math.trunc(Details?.runtime / 60)}h ${
-                    Details?.runtime % 60
-                  }m`}
-                </p>
+                {Details?.runtime && (
+                  <p className="text-gray-500">
+                    <span className="font-semibold text-white">
+                      Runtime :&nbsp;{" "}
+                    </span>{" "}
+                    {`${Math.trunc(Details?.runtime / 60)}h ${
+                      Details?.runtime % 60
+                    }m`}
+                  </p>
+                )}
               </div>
-              <p className="border-b border-gray-500 text-gray-500 py-4">
-                <span className="font-semibold text-white">
-                  {" "}
-                  Director :&nbsp;{" "}
-                </span>
-                {Credits?.crew
-                  ?.filter((credit: any) => credit?.department === "Directing")
-                  ?.map((director: any) => (
-                    <span key={director.id}>{director.name + ",  "}</span>
-                  ))}
-              </p>
-              <p className="border-b border-gray-500 text-gray-500 py-4">
-                <span className="font-semibold text-white">
-                  {" "}
-                  Writer :&nbsp;
-                </span>
-                {Credits?.crew
-                  ?.filter((credit: any) => credit?.department === "Writing")
-                  ?.map((director: any, i: string) => (
-                    <span key={i}>{director.name + ",  "}</span>
-                  ))}
-              </p>
+              {Credits?.crew?.some(
+                (credit: any) => credit?.department === "Directing"
+              ) && (
+                <p className="border-b border-gray-500 text-gray-500 py-4">
+                  <span className="font-semibold text-white">
+                    {" "}
+                    Director :&nbsp;{" "}
+                  </span>
+                  {Credits?.crew
+                    ?.filter(
+                      (credit: any) => credit?.department === "Directing"
+                    )
+                    ?.map((director: any) => (
+                      <span key={director.id}>{director.name + ",  "}</span>
+                    ))}
+                </p>
+              )}
+              {Credits?.crew?.some(
+                (credit: any) => credit?.department === "Writing"
+              ) && (
+                <p className="border-b border-gray-500 text-gray-500 py-4">
+                  <span className="font-semibold text-white">
+                    {" "}
+                    Writer :&nbsp;
+                  </span>
+                  {Credits?.crew
+                    ?.filter((credit: any) => credit?.department === "Writing")
+                    ?.map((director: any, i: string) => (
+                      <span key={i}>{director.name + ",  "}</span>
+                    ))}
+                </p>
+              )}
             </div>
             <div className="w-full mx-auto overflow-hidden flex h-full -z-10 absolute top-0 left-0 right-0 items-center justify-center">
               <img

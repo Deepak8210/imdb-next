@@ -27,11 +27,13 @@ interface ProviderState {
     data: [] | null;
     loading: boolean;
     error: string | null;
+    mediaType?: string;
   };
   topRated: {
     data: [] | null;
     loading: boolean;
     error: string | null;
+    mediaType?: string;
   };
   movieDetails: {
     loading: boolean;
@@ -98,20 +100,20 @@ export const fetchTrending = createAsyncThunk<
 
 // Async thunk to fetch popular
 export const fetchPopular = createAsyncThunk<
-  [],
+  { data: any; mediaType: string },
   string,
   {
     rejectValue: ErrorResponse;
   }
->("provider/fetchPopular", async (label, { rejectWithValue }) => {
+>("provider/fetchPopular", async (mediaType, { rejectWithValue }) => {
   try {
-    const { data } = await axios.get(tmdbBaseUrl + `/${label}/popular`, {
+    const { data } = await axios.get(tmdbBaseUrl + `/${mediaType}/popular`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    return data;
+    return { data, mediaType };
   } catch (error) {
     return rejectWithValue({
       message: error instanceof Error ? error.message : "An error occurred",
@@ -121,15 +123,15 @@ export const fetchPopular = createAsyncThunk<
 
 // Async thunk to fetch top rated
 export const fetchTopRated = createAsyncThunk<
-  [],
+  { data: any; mediaType: string },
   string,
   {
     rejectValue: ErrorResponse;
   }
->("provider/fetchTopRated", async (label, { rejectWithValue }) => {
+>("provider/fetchTopRated", async (mediaType, { rejectWithValue }) => {
   try {
     const { data } = await axios.get(
-      tmdbBaseUrl + `/${label.slice(0, -1)}/top_rated`,
+      tmdbBaseUrl + `/${mediaType.slice(0, -1)}/top_rated`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -137,7 +139,7 @@ export const fetchTopRated = createAsyncThunk<
       }
     );
 
-    return data;
+    return { data, mediaType };
   } catch (error) {
     return rejectWithValue({
       message: error instanceof Error ? error.message : "An error occurred",
@@ -300,7 +302,8 @@ const providerSlice = createSlice({
       })
       .addCase(fetchPopular.fulfilled, (state, action) => {
         state.popular.loading = false;
-        state.popular.data = action.payload;
+        state.popular.data = action.payload.data;
+        state.popular.mediaType = action.payload.mediaType;
       })
       .addCase(fetchPopular.rejected, (state, action) => {
         state.popular.loading = false;
@@ -312,7 +315,8 @@ const providerSlice = createSlice({
       })
       .addCase(fetchTopRated.fulfilled, (state, action) => {
         state.topRated.loading = false;
-        state.topRated.data = action.payload;
+        state.topRated.data = action.payload.data;
+        state.popular.mediaType = action.payload.mediaType;
       })
       .addCase(fetchTopRated.rejected, (state, action) => {
         state.topRated.loading = false;

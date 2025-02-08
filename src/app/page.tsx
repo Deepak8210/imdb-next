@@ -2,9 +2,8 @@
 import Card from "../components/Card";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { generateRandomNumber } from "../utils/generateRandom";
-
 import {
   fetchBanner,
   fetchTrending,
@@ -19,14 +18,16 @@ import ToggleBtn from "@/components/ToggleBtn";
 export default function Home() {
   const baseImageUrl = "https://image.tmdb.org/t/p/original";
   const [imageUrl, setImageUrl] = useState("");
+  const [selectedPopularType, setSelectedPopularType] = useState("movie");
+  const [selectedTopRatedType, setSelectedTopRatedType] = useState("movie");
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(fetchBanner());
     dispatch(fetchTrending("day"));
-    dispatch(fetchPopular("movie"));
-    dispatch(fetchTopRated("movies"));
-  }, [dispatch]);
+    dispatch(fetchPopular(selectedPopularType));
+    dispatch(fetchTopRated(selectedTopRatedType));
+  }, [dispatch, selectedPopularType, selectedTopRatedType]);
 
   const banners = useSelector((state: any) => state.provider.banners.data) || {
     results: [],
@@ -36,9 +37,11 @@ export default function Home() {
   };
   const popular = useSelector((state: any) => state.provider.popular) || {
     results: [],
+    mediaType: selectedPopularType,
   };
   const topRated = useSelector((state: any) => state.provider.topRated) || {
     results: [],
+    mediaType: selectedTopRatedType,
   };
 
   useEffect(() => {
@@ -50,7 +53,7 @@ export default function Home() {
   }, [banners]);
 
   // Helper function to render slides
-  const renderSlides = (data: any, loading: boolean) => {
+  const renderSlides = (data: any, loading: boolean, mediaType: string) => {
     if (loading) {
       return Array(5)
         .fill(0)
@@ -69,6 +72,8 @@ export default function Home() {
           date={item.release_date || item.first_air_date}
           ratings={item.vote_average}
           id={item.id}
+          media_type={item.media_type}
+          mediaType={mediaType}
         />
       </SplideSlide>
     ));
@@ -120,7 +125,7 @@ export default function Home() {
               aria-label="Trending Movies and Shows"
               options={{ perPage: 5, perMove: 1, pagination: false }}
             >
-              {renderSlides(trending?.data, trending?.loading)}
+              {renderSlides(trending?.data, trending?.loading, "movie")}
             </Splide>
           </div>
         </div>
@@ -129,7 +134,10 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <h5 className="text-gray-100 text-2xl">What's Popular</h5>
             <div className="p-1 flex rounded-full space-x-4 my-4">
-              <ToggleBtn filterLabel={["movie", "tv"]} />
+              <ToggleBtn
+                filterLabel={["movie", "tv"]}
+                onChange={(type: string) => setSelectedPopularType(type)}
+              />
             </div>
           </div>
           <div>
@@ -137,7 +145,7 @@ export default function Home() {
               aria-label="Popular Movies and Shows"
               options={{ perPage: 5, perMove: 1, pagination: false }}
             >
-              {renderSlides(popular?.data, popular?.loading)}
+              {renderSlides(popular?.data, popular?.loading, popular.mediaType)}
             </Splide>
           </div>
         </div>
@@ -146,7 +154,10 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <h5 className="text-gray-100 text-2xl">Top Rated</h5>
             <div className="p-1 flex rounded-full space-x-4 my-4">
-              <ToggleBtn filterLabel={["movies", "tvs"]} />
+              <ToggleBtn
+                filterLabel={["movie", "tv"]}
+                onChange={(type: string) => setSelectedTopRatedType(type)}
+              />
             </div>
           </div>
           <div>
@@ -154,7 +165,11 @@ export default function Home() {
               aria-label="Top Rated Movies and Shows"
               options={{ perPage: 5, perMove: 1, pagination: false }}
             >
-              {renderSlides(topRated?.data, topRated?.loading)}
+              {renderSlides(
+                topRated?.data,
+                topRated?.loading,
+                topRated.mediaType
+              )}
             </Splide>
           </div>
         </div>

@@ -4,11 +4,19 @@ import cardImg from "../../public/cardImg.jpg";
 import CircularProgressBar from "./CircularProgressBar";
 import { useRouter } from "next/navigation";
 
-const Card = ({ id, imageUrl, title, date, ratings }: any) => {
+const Card = ({
+  id,
+  imageUrl,
+  title,
+  date,
+  ratings,
+  media_type,
+  mediaType,
+}: any) => {
   const router = useRouter();
   return (
     <div
-      onClick={() => router.push(`/movie/${id}`)}
+      onClick={() => router.push(`/${media_type || mediaType}/${id}`)}
       className=" mr-4 cursor-pointer"
     >
       <div className="relative  h-[350px] w-full ">
