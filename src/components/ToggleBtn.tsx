@@ -7,7 +7,7 @@
 //   fetchTrending,
 // } from "../store/slices/providerSlice";
 // interface ToggleBtnProps {
-//   filterLabel: string[]; // Array of button labels (e.g., ["day", "week"] or ["Movies", "Tv"])
+//   filterLabel: string[];
 // }
 
 // const ToggleBtn: React.FC<ToggleBtnProps> = ({ filterLabel }) => {
@@ -57,7 +57,7 @@
 //   );
 // };
 
-//export default ToggleBtn;
+// export default ToggleBtn;
 
 import { useState } from "react";
 import { useDispatch } from "react-redux";
@@ -103,10 +103,12 @@ const ToggleBtn: React.FC<ToggleBtnProps> = ({ filterLabel }) => {
           onClick={() => handleToggle(index)}
           className={`${
             isSelected === index ? "text-white" : "text-gray-600"
-          } px-8 py-1 z-10`}
+          } px-6  z-10`}
         >
-          {label === "tvs"
-            ? label.charAt(0).toUpperCase() + label.slice(1, -1)
+          {label === "tv" || label === "tvs"
+            ? "Tv Shows"
+            : label === "movie"
+            ? "Movies"
             : label.charAt(0).toUpperCase() + label.slice(1)}
         </button>
       ))}

@@ -155,7 +155,7 @@ export default function Home() {
             <h5 className="text-gray-100 text-2xl">Top Rated</h5>
             <div className="p-1 flex rounded-full space-x-4 my-4">
               <ToggleBtn
-                filterLabel={["movie", "tv"]}
+                filterLabel={["movies", "tvs"]}
                 onChange={(type: string) => setSelectedTopRatedType(type)}
               />
             </div>

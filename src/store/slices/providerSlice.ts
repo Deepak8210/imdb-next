@@ -75,14 +75,14 @@ export const fetchBanner = createAsyncThunk<
   }
 });
 
-// Async thunk to fetch users
+// Async thunk to fetch trendings
 export const fetchTrending = createAsyncThunk<
   [],
   string,
   {
     rejectValue: ErrorResponse;
   }
->("provider/fetchUsers", async (label, { rejectWithValue }) => {
+>("provider/fetchTrendings", async (label, { rejectWithValue }) => {
   try {
     const { data } = await axios.get(tmdbBaseUrl + `/trending/all/${label}`, {
       headers: {
@@ -131,7 +131,7 @@ export const fetchTopRated = createAsyncThunk<
 >("provider/fetchTopRated", async (mediaType, { rejectWithValue }) => {
   try {
     const { data } = await axios.get(
-      tmdbBaseUrl + `/${mediaType.slice(0, -1)}/top_rated`,
+      tmdbBaseUrl + `/${mediaType === "tvs" ? "tv" : "movie"}/top_rated`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -255,7 +255,7 @@ const initialState: ProviderState = {
   banners: { data: null, loading: false, error: null },
   trending: { data: null, loading: false, error: null },
   popular: { data: null, loading: false, error: null },
-  topRated: { data: null, loading: false, error: null },
+  topRated: { data: null, loading: false, error: null, mediaType: "" },
   movieDetails: { details: null, credits: null, loading: false, error: null },
   similarVideos: {
     videos: null,
