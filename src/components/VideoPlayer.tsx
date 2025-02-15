@@ -3,10 +3,7 @@ import "./styles/custom.css";
 
 const VideoPlayer = () => {
   return (
-    <a
-      href="https://player.vimeo.com/external/488076225.hd.mp4?s=9cf4808c4e76c0a9267abb75dbec48bc451a138f&profile_id=175"
-      className="glightbox_video  group"
-    >
+    <div className="glightbox_video  group">
       <svg
         width="90"
         height="90"
@@ -36,7 +33,7 @@ const VideoPlayer = () => {
           fill="#BF2428"
         />
       </svg>
-    </a>
+    </div>
   );
 };
 

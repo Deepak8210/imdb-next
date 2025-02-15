@@ -18,6 +18,7 @@ import ToggleBtn from "@/components/ToggleBtn";
 export default function Home() {
   const baseImageUrl = "https://image.tmdb.org/t/p/original";
   const [imageUrl, setImageUrl] = useState("");
+  const [selectedTrendingType, setSelectedTrendingType] = useState("day");
   const [selectedPopularType, setSelectedPopularType] = useState("movie");
   const [selectedTopRatedType, setSelectedTopRatedType] = useState("movie");
   const dispatch = useDispatch<AppDispatch>();
@@ -72,8 +73,7 @@ export default function Home() {
           date={item.release_date || item.first_air_date}
           ratings={item.vote_average}
           id={item.id}
-          media_type={item.media_type}
-          mediaType={mediaType}
+          media_type={mediaType}
         />
       </SplideSlide>
     ));
@@ -89,7 +89,7 @@ export default function Home() {
         }}
       >
         <div className="w-full h-full absolute bg-[rgba(4,21,45,0.5)]"></div>
-        <div className="h-20 w-full  bg-gradient-to-b from-custom-dark via-custom6faded to-custom-lighter"></div>
+        <div className="h-20 w-full bg-gradient-to-b from-custom-dark via-custom6faded to-custom-lighter"></div>
         <div className="w-full flex flex-col items-center justify-between z-10">
           <h1 className="text-[5.5rem] font-semibold leading-[5rem]">
             Welcome.
@@ -97,19 +97,18 @@ export default function Home() {
           <p className="text-[1.5rem]">
             Millions of movies, TV shows and artists to discover. Explore now.
           </p>
-          <div className=" w-2/5 rounded-full flex justify-between mt-8">
+          <div className="w-2/5 rounded-full flex justify-between mt-8">
             <input
               type="text"
               className="w-full rounded-[50px_0_0_50px] px-4 py-3 text-gray-700 focus:outline-none"
               placeholder="Search for movies, tv shows, actors..."
             />
-            <button className="px-8  bg-gradient-to-r from-[#ff00cc] to-[#3c1053] rounded-[0_50px_50px_0]">
+            <button className="px-8 bg-gradient-to-r from-[#ff00cc] to-[#3c1053] rounded-[0_50px_50px_0]">
               Search
             </button>
           </div>
         </div>
-
-        <div className="h-20 w-full  bg-gradient-to-t from-custom-dark via-custom-faded to-custom-lighter "></div>
+        <div className="h-20 w-full bg-gradient-to-t from-custom-dark via-custom-faded to-custom-lighter"></div>
       </section>
 
       <section className="w-full min-h-screen px-[10%]">
@@ -117,7 +116,11 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <h5 className="text-gray-100 text-2xl">Trending</h5>
             <div className="p-1 flex rounded-full space-x-4 my-4">
-              <ToggleBtn filterLabel={["day", "week"]} category={"trending"} />
+              <ToggleBtn
+                onChange={(type: string) => setSelectedTrendingType(type)}
+                filterLabel={["day", "week"]}
+                category="trending"
+              />
             </div>
           </div>
           <div>
@@ -136,7 +139,7 @@ export default function Home() {
             <div className="p-1 flex rounded-full space-x-4 my-4">
               <ToggleBtn
                 filterLabel={["movie", "tv"]}
-                category={"popular"}
+                category="popular"
                 onChange={(type: string) => setSelectedPopularType(type)}
               />
             </div>
@@ -157,7 +160,7 @@ export default function Home() {
             <div className="p-1 flex rounded-full space-x-4 my-4">
               <ToggleBtn
                 filterLabel={["movie", "tv"]}
-                category={"topRated"}
+                category="topRated"
                 onChange={(type: string) => setSelectedTopRatedType(type)}
               />
             </div>

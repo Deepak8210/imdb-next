@@ -8,6 +8,7 @@ import {
 } from "../store/slices/providerSlice";
 
 interface ToggleBtnProps {
+  onChange: (type: string) => void;
   filterLabel: string[]; // Array of button labels (e.g., ["day", "week"] or ["Movies", "Tv"])
   category: string; // Category to determine which action to dispatch
 }

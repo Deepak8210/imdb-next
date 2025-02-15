@@ -1,11 +1,11 @@
 "use client";
-import { useState } from "react";
+import { use, useState, useEffect } from "react";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import CircularProgressBar from "../../../components/CircularProgressBar";
 import VideoPlayer from "../../../components/VideoPlayer";
 import Card from "../../../components/Card";
-import { use, useEffect } from "react";
+import { useRouter } from "next/router";
 import {
   fetchDetails,
   fetchSimilarVideos,
@@ -13,6 +13,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../store/store";
 import MovieDetailsSkeleton from "../../../components/MovieDetailsSkeleton";
+import IframeYoutube from "@/components/IframeYoutbe";
 
 const page = ({
   params,
@@ -22,6 +23,11 @@ const page = ({
   const baseImageUrl = "https://image.tmdb.org/t/p/original";
   const dispatch = useDispatch<AppDispatch>();
   const resolvedParams = use(params);
+  const [showIframe, setShowIframe] = useState(false);
+  const [videoId, setVideoId] = useState("");
+
+  const router = useRouter();
+  console.log(router);
 
   useEffect(() => {
     dispatch(
@@ -52,6 +58,28 @@ const page = ({
     results: [],
   };
 
+  const handleButtonClick = (videos: any) => {
+    console.log("Videos object:", videos); // Debugging statement
+
+    const trailerKey = videos?.results?.find((video: any) =>
+      video?.name.toLowerCase().includes("trailer")
+    )?.key;
+
+    console.log("Trailer key:", trailerKey); // Debugging statement
+
+    setVideoId(trailerKey);
+    setShowIframe(true);
+  };
+
+  const relatedVideoHandler = (id: string) => {
+    setVideoId(id);
+    setShowIframe(true);
+  };
+
+  const handleCloseIframe = () => {
+    setShowIframe(false);
+  };
+
   return (
     <>
       {loading ? (
@@ -59,12 +87,14 @@ const page = ({
       ) : (
         <div className="pt-20 text-white px-[10%]">
           <section className="flex w-full py-12">
-            <div className="w-[65%] flex rounded-xl pr-12">
-              <img
-                src={baseImageUrl + Details?.backdrop_path}
-                alt="movie image"
-                className="rounded-xl object-cover"
-              />
+            <div className="w-[65%] flex rounded-xl pr-16">
+              <div className=" w-[450px] h-[600px] overflow-hidden flex rounded-xl">
+                <img
+                  src={baseImageUrl + Details?.backdrop_path}
+                  alt="movie image"
+                  className="rounded-xl object-cover"
+                />
+              </div>
             </div>
             <div className="w-full">
               <h5 className="text-[2.2rem]">
@@ -92,9 +122,12 @@ const page = ({
                   />
                 </div>
                 <div className="flex w-full items-center gap-4 ">
-                  <div className="relative">
+                  <button
+                    className="relative"
+                    onClick={() => handleButtonClick(videos)}
+                  >
                     <VideoPlayer />
-                  </div>
+                  </button>
                   <span className="text-2xl"> Watch Trailer</span>
                 </div>
               </div>
@@ -207,9 +240,12 @@ const page = ({
                       alt=""
                       className="object-cover top rounded-xl"
                     />
-                    <div className="absolute top-0 left-0 flex items-center justify-center  w-full h-full">
+                    <button
+                      onClick={() => relatedVideoHandler(vid.key)}
+                      className="absolute top-0 left-0 flex items-center justify-center  w-full h-full"
+                    >
                       <VideoPlayer />
-                    </div>
+                    </button>
                   </div>
 
                   <p className="text-white text-[1rem] my-2 flex">
@@ -270,6 +306,14 @@ const page = ({
               </Splide>
             </div>
           </section>
+
+          {showIframe && (
+            <IframeYoutube
+              open={showIframe}
+              onClose={handleCloseIframe}
+              videoKey={videoId}
+            />
+          )}
         </div>
       )}
     </>
