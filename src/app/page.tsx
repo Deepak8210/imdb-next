@@ -117,7 +117,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <h5 className="text-gray-100 text-2xl">Trending</h5>
             <div className="p-1 flex rounded-full space-x-4 my-4">
-              <ToggleBtn filterLabel={["day", "week"]} />
+              <ToggleBtn filterLabel={["day", "week"]} category={"trending"} />
             </div>
           </div>
           <div>
@@ -136,6 +136,7 @@ export default function Home() {
             <div className="p-1 flex rounded-full space-x-4 my-4">
               <ToggleBtn
                 filterLabel={["movie", "tv"]}
+                category={"popular"}
                 onChange={(type: string) => setSelectedPopularType(type)}
               />
             </div>
@@ -155,7 +156,8 @@ export default function Home() {
             <h5 className="text-gray-100 text-2xl">Top Rated</h5>
             <div className="p-1 flex rounded-full space-x-4 my-4">
               <ToggleBtn
-                filterLabel={["movies", "tvs"]}
+                filterLabel={["movie", "tv"]}
+                category={"topRated"}
                 onChange={(type: string) => setSelectedTopRatedType(type)}
               />
             </div>

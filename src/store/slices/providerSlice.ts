@@ -53,14 +53,14 @@ interface ProviderState {
 const tmdbBaseUrl = "https://api.themoviedb.org/3";
 const token = process.env.NEXT_PUBLIC_IMDB_TOKEN;
 
-// Async thunk to fetch posts
+// Async thunk to fetch banners
 export const fetchBanner = createAsyncThunk<
   [],
   void,
   {
     rejectValue: ErrorResponse;
   }
->("provider/fetchPosts", async (_, { rejectWithValue }) => {
+>("provider/fetchBanner", async (_, { rejectWithValue }) => {
   try {
     const { data } = await axios.get(tmdbBaseUrl + "/movie/upcoming", {
       headers: {
@@ -75,21 +75,20 @@ export const fetchBanner = createAsyncThunk<
   }
 });
 
-// Async thunk to fetch trendings
+// Async thunk to fetch trending
 export const fetchTrending = createAsyncThunk<
   [],
   string,
   {
     rejectValue: ErrorResponse;
   }
->("provider/fetchTrendings", async (label, { rejectWithValue }) => {
+>("provider/fetchTrending", async (label, { rejectWithValue }) => {
   try {
     const { data } = await axios.get(tmdbBaseUrl + `/trending/all/${label}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return data;
   } catch (error) {
     return rejectWithValue({
@@ -112,7 +111,6 @@ export const fetchPopular = createAsyncThunk<
         Authorization: `Bearer ${token}`,
       },
     });
-
     return { data, mediaType };
   } catch (error) {
     return rejectWithValue({
@@ -130,15 +128,11 @@ export const fetchTopRated = createAsyncThunk<
   }
 >("provider/fetchTopRated", async (mediaType, { rejectWithValue }) => {
   try {
-    const { data } = await axios.get(
-      tmdbBaseUrl + `/${mediaType === "tvs" ? "tv" : "movie"}/top_rated`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
+    const { data } = await axios.get(`${tmdbBaseUrl}/${mediaType}/top_rated`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return { data, mediaType };
   } catch (error) {
     return rejectWithValue({
@@ -149,8 +143,8 @@ export const fetchTopRated = createAsyncThunk<
 
 // Async thunk to fetch movie details
 export const fetchDetails = createAsyncThunk<
-  { details: any; credits: any }, // Update the return type to match the actual return value
-  FetchDetailsArgs, // Argument type
+  { details: any; credits: any },
+  FetchDetailsArgs,
   {
     rejectValue: ErrorResponse;
   }
@@ -158,7 +152,6 @@ export const fetchDetails = createAsyncThunk<
   "provider/fetchDetails",
   async ({ filterType, movieId }, { rejectWithValue }) => {
     try {
-      // Define both API calls
       const api1 = axios.get(
         tmdbBaseUrl + `/${filterType}/${movieId}?language=en-US`,
         {
@@ -177,10 +170,8 @@ export const fetchDetails = createAsyncThunk<
         }
       );
 
-      // Use Promise.all to call both APIs concurrently
       const [response1, response2] = await Promise.all([api1, api2]);
 
-      // Return both responses
       return {
         details: response1.data,
         credits: response2.data,
@@ -193,10 +184,10 @@ export const fetchDetails = createAsyncThunk<
   }
 );
 
-// Async thunk to fetch similar/recommended  movies/videos
+// Async thunk to fetch similar/recommended movies/videos
 export const fetchSimilarVideos = createAsyncThunk<
-  { videos: any; similar: any; recommendation: any }, // Update the return type to match the actual return value
-  FetchDetailsArgs, // Argument type
+  { videos: any; similar: any; recommendation: any },
+  FetchDetailsArgs,
   {
     rejectValue: ErrorResponse;
   }
@@ -204,7 +195,6 @@ export const fetchSimilarVideos = createAsyncThunk<
   "provider/fetchSimilarVideos",
   async ({ filterType, movieId }, { rejectWithValue }) => {
     try {
-      // Define both API calls
       const api1 = axios.get(tmdbBaseUrl + `/${filterType}/${movieId}/videos`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -229,14 +219,12 @@ export const fetchSimilarVideos = createAsyncThunk<
         }
       );
 
-      // Use Promise.all to call both APIs concurrently
       const [response1, response2, response3] = await Promise.all([
         api1,
         api2,
         api3,
       ]);
 
-      // Return both responses
       return {
         videos: response1.data,
         similar: response2.data,
@@ -316,7 +304,7 @@ const providerSlice = createSlice({
       .addCase(fetchTopRated.fulfilled, (state, action) => {
         state.topRated.loading = false;
         state.topRated.data = action.payload.data;
-        state.popular.mediaType = action.payload.mediaType;
+        state.topRated.mediaType = action.payload.mediaType;
       })
       .addCase(fetchTopRated.rejected, (state, action) => {
         state.topRated.loading = false;
@@ -328,9 +316,8 @@ const providerSlice = createSlice({
       })
       .addCase(fetchDetails.fulfilled, (state, action) => {
         state.movieDetails.loading = false;
-        // Update state with details and credits separately
-        state.movieDetails.details = action.payload.details; // Store movie details
-        state.movieDetails.credits = action.payload.credits; // Store movie credits
+        state.movieDetails.details = action.payload.details;
+        state.movieDetails.credits = action.payload.credits;
       })
       .addCase(fetchDetails.rejected, (state, action) => {
         state.movieDetails.loading = false;
@@ -343,10 +330,9 @@ const providerSlice = createSlice({
       })
       .addCase(fetchSimilarVideos.fulfilled, (state, action) => {
         state.similarVideos.loading = false;
-        // Update state with details and credits separately
-        state.similarVideos.videos = action.payload.videos; // Store movie details
-        state.similarVideos.similar = action.payload.similar; // Store movie credits
-        state.similarVideos.recommendation = action.payload.recommendation; // Store movie credits
+        state.similarVideos.videos = action.payload.videos;
+        state.similarVideos.similar = action.payload.similar;
+        state.similarVideos.recommendation = action.payload.recommendation;
       })
       .addCase(fetchSimilarVideos.rejected, (state, action) => {
         state.similarVideos.loading = false;
