@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../store/store";
 import CardSkeleton from "../components/CardSkeleton";
 import ToggleBtn from "@/components/ToggleBtn";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const baseImageUrl = "https://image.tmdb.org/t/p/original";
@@ -22,6 +23,8 @@ export default function Home() {
   const [selectedPopularType, setSelectedPopularType] = useState("movie");
   const [selectedTopRatedType, setSelectedTopRatedType] = useState("movie");
   const dispatch = useDispatch<AppDispatch>();
+  const [search, setSearch] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     dispatch(fetchBanner());
@@ -52,6 +55,11 @@ export default function Home() {
       setImageUrl(image);
     }
   }, [banners]);
+
+  const submitHandler = (e: any) => {
+    e.preventDefault();
+    router.push(`/search/${search}`);
+  };
 
   // Helper function to render slides
   const renderSlides = (data: any, loading: boolean, mediaType: string) => {
@@ -97,16 +105,24 @@ export default function Home() {
           <p className="text-[1.5rem]">
             Millions of movies, TV shows and artists to discover. Explore now.
           </p>
-          <div className="w-2/5 rounded-full flex justify-between mt-8">
+          <form
+            onSubmit={submitHandler}
+            className="w-2/5 rounded-full flex justify-between mt-8"
+          >
             <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               type="text"
               className="w-full rounded-[50px_0_0_50px] px-4 py-3 text-gray-700 focus:outline-none"
               placeholder="Search for movies, tv shows, actors..."
             />
-            <button className="px-8 bg-gradient-to-r from-[#ff00cc] to-[#3c1053] rounded-[0_50px_50px_0]">
+            <button
+              type="submit"
+              className="px-8 bg-gradient-to-r from-[#ff00cc] to-[#3c1053] rounded-[0_50px_50px_0]"
+            >
               Search
             </button>
-          </div>
+          </form>
         </div>
         <div className="h-20 w-full bg-gradient-to-t from-custom-dark via-custom-faded to-custom-lighter"></div>
       </section>

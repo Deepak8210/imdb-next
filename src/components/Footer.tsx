@@ -50,25 +50,25 @@ const Footer = () => {
       <div className="w-full flex items-center justify-center space-x-4 mt-5 mb-5">
         <Link
           href={"/"}
-          className="bg-[#04152D] p-3 rounded-full hover:shadow-lg hover:shadow-pink-600 group duration-"
+          className="bg-[#04152D] p-3 rounded-full hover:shadow-md hover:shadow-pink-600 group duration-"
         >
           <FaFacebookF className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
         </Link>
         <Link
           href={"/"}
-          className="bg-[#04152D] p-3 rounded-full hover:shadow-lg hover:shadow-pink-600 group duration-"
+          className="bg-[#04152D] p-3 rounded-full hover:shadow-md hover:shadow-pink-600 group duration-"
         >
           <FaInstagram className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
         </Link>
         <Link
           href={"/"}
-          className="bg-[#04152D] p-3 rounded-full hover:shadow-lg hover:shadow-pink-600 group duration-"
+          className="bg-[#04152D] p-3 rounded-full hover:shadow-md hover:shadow-pink-600 group duration-"
         >
           <FaTwitter className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
         </Link>
         <Link
           href={"/"}
-          className="bg-[#04152D] p-3 rounded-full hover:shadow-lg hover:shadow-pink-600 group duration-"
+          className="bg-[#04152D] p-3 rounded-full hover:shadow-md hover:shadow-pink-600 group duration-"
         >
           <FaLinkedin className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
         </Link>

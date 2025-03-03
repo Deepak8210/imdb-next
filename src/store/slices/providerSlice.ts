@@ -84,7 +84,7 @@ export const fetchTrending = createAsyncThunk<
   }
 >("provider/fetchTrending", async (label, { rejectWithValue }) => {
   try {
-    const { data } = await axios.get(tmdbBaseUrl + `/trending/all/${label}`, {
+    const { data } = await axios.get(tmdbBaseUrl + `/trending/movie/${label}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

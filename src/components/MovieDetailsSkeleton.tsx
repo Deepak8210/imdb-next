@@ -5,7 +5,7 @@ const MovieDetailsSkeleton = () => {
       <section className="flex w-full py-12">
         {/* Image Section */}
         <div className="w-[65%] flex rounded-xl pr-16">
-          <div className="w-full h-[500px] bg-gray-700 rounded-xl animate-pulse"></div>
+          <div className="w-full h-[600px] bg-gray-700 rounded-xl animate-pulse"></div>
         </div>
 
         {/* Details Section */}

@@ -58,10 +58,10 @@ const CircularProgressBar = ({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          fontSize: "24px",
-          color: "#808080",
+          fontSize: "18px",
+          color: "#808090",
         }}
-        className="font-semibold"
+        className="font-medium"
       >
         {safePercentage / 10} {/* Display the safe percentage */}
       </div>

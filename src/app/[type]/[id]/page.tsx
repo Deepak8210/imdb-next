@@ -5,7 +5,6 @@ import "@splidejs/react-splide/css";
 import CircularProgressBar from "../../../components/CircularProgressBar";
 import VideoPlayer from "../../../components/VideoPlayer";
 import Card from "../../../components/Card";
-import { useRouter } from "next/router";
 import {
   fetchDetails,
   fetchSimilarVideos,
@@ -14,20 +13,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../../store/store";
 import MovieDetailsSkeleton from "../../../components/MovieDetailsSkeleton";
 import IframeYoutube from "@/components/IframeYoutbe";
+import { useParams } from "next/navigation";
 
 const page = ({
   params,
 }: {
   params: Promise<{ type: string; id: number }>;
 }) => {
-  const baseImageUrl = "https://image.tmdb.org/t/p/original";
+  const baseImageUrl = "https://image.tmdb.org/t/p/w1280";
   const dispatch = useDispatch<AppDispatch>();
   const resolvedParams = use(params);
   const [showIframe, setShowIframe] = useState(false);
   const [videoId, setVideoId] = useState("");
-
-  const router = useRouter();
-  console.log(router);
+  const { type } = useParams();
 
   useEffect(() => {
     dispatch(
@@ -90,7 +88,12 @@ const page = ({
             <div className="w-[65%] flex rounded-xl pr-16">
               <div className=" w-[450px] h-[600px] overflow-hidden flex rounded-xl">
                 <img
-                  src={baseImageUrl + Details?.backdrop_path}
+                  src={
+                    Details?.backdrop_path || Details?.poster_path
+                      ? baseImageUrl +
+                        (Details.backdrop_path || Details.poster_path)
+                      : "/no_poster.webp"
+                  }
                   alt="movie image"
                   className="rounded-xl object-cover"
                 />
@@ -266,14 +269,14 @@ const page = ({
                     <div className="w-[15.5rem] ">
                       <Card
                         imageUrl={
-                          similar?.backdrop_path !== null
-                            ? baseImageUrl + similar.backdrop_path
-                            : `/cardImg.jpg`
+                          baseImageUrl +
+                          (similar?.backdrop_path || similar?.poster_path)
                         }
                         title={similar?.title}
                         date={similar?.release_date}
                         ratings={similar?.vote_average}
                         id={similar?.id}
+                        media_type={type as string}
                       />
                     </div>
                   </SplideSlide>
@@ -299,6 +302,8 @@ const page = ({
                         title={recommend?.title}
                         date={recommend?.release_date}
                         ratings={recommend?.vote_average}
+                        id={recommend?.id}
+                        media_type={type as string}
                       />
                     </div>
                   </SplideSlide>
