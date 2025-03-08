@@ -78,7 +78,7 @@ const Card = ({
           )}
 
           {/* Only render genre tags if we have genres data */}
-          {displayGenres.length > 0 ? (
+          {/* {displayGenres.length > 0 ? (
             <div className="flex space-x-2 items-center">
               {displayGenres.map((genre, index) => (
                 <span
@@ -95,7 +95,7 @@ const Card = ({
                 {type}
               </span>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
