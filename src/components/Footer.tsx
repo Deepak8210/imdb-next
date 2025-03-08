@@ -1,10 +1,6 @@
 import Link from "next/link";
-import {
-  FaInstagram,
-  FaFacebookF,
-  FaTwitter,
-  FaLinkedin,
-} from "react-icons/fa";
+import { FaGithub, FaFacebookF } from "react-icons/fa";
+import { FaXTwitter, FaLinkedinIn } from "react-icons/fa6";
 const Footer = () => {
   return (
     <section className="w-full bg-[#020c1a] h-fit p-5">
@@ -54,24 +50,27 @@ const Footer = () => {
         >
           <FaFacebookF className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
         </Link>
-        <Link
-          href={"/"}
+        <a
+          href={"https://github.com/Deepak8210"}
+          target="_blank"
           className="bg-[#04152D] p-3 rounded-full hover:shadow-md hover:shadow-pink-600 group duration-"
         >
-          <FaInstagram className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
-        </Link>
-        <Link
-          href={"/"}
+          <FaGithub className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
+        </a>
+        <a
+          href={"https://x.com/beasty_dr"}
+          target="_blank"
           className="bg-[#04152D] p-3 rounded-full hover:shadow-md hover:shadow-pink-600 group duration-"
         >
-          <FaTwitter className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
-        </Link>
-        <Link
-          href={"/"}
+          <FaXTwitter className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
+        </a>
+        <a
+          href={"https://www.linkedin.com/in/deepak-kumar-49887a240/"}
+          target="_blank"
           className="bg-[#04152D] p-3 rounded-full hover:shadow-md hover:shadow-pink-600 group duration-"
         >
-          <FaLinkedin className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
-        </Link>
+          <FaLinkedinIn className="w-6 h-6 text-gray-300 group-hover:text-pink-600 duration-" />
+        </a>
       </div>
     </section>
   );
