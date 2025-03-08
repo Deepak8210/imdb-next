@@ -17,6 +17,7 @@ const Header = () => {
   const onSearchHandler = (e: any) => {
     e.preventDefault();
     router.push(`/search/${search}`);
+    setSearch("");
   };
 
   return (
@@ -32,13 +33,9 @@ const Header = () => {
           >
             <IoIosSearch />
           </span>
-
-          <Link href={"/movies"}>Movies</Link>
-          <Link href={"/tvshows"}>Tv Shows</Link>
         </div>
       </div>
 
-      {/* Search Bar with Smooth Slide Animation */}
       <div
         className={`absolute top-0 left-0 w-full shadow-md transition-all duration-500 ease-in-out ${
           showSearch
@@ -49,6 +46,7 @@ const Header = () => {
         <div className="bg-white h-12 flex items-center justify-center w-full">
           <form onSubmit={onSearchHandler} className="w-1/2">
             <input
+              value={search}
               type="text"
               onChange={(e) => setSearch(e.target.value)}
               className="text-gray-500 w-full h-full text-lg px-4 focus:outline-none"
